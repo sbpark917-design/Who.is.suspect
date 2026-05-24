@@ -1,0 +1,337 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body,html{background:transparent}
+.wrap{background:#0a0f1e;color:#e8f4fd;font-family:var(--font-sans);padding:12px;border-radius:var(--border-radius-lg)}
+.hdr{text-align:center;padding:8px 0 12px;border-bottom:1px solid #1e3a5f;margin-bottom:12px}
+.hdr-t{font-size:16px;font-weight:500;letter-spacing:4px;color:#00e5ff}
+.hdr-s{font-size:11px;color:#4a7a9b;margin-top:3px;letter-spacing:1px}
+
+.overlay{background:#050a14;border-radius:var(--border-radius-lg);padding:20px;text-align:center;margin-bottom:12px;display:none}
+.overlay.show{display:block}
+.overlay-t{font-size:16px;font-weight:500;color:#fff;letter-spacing:2px}
+
+.battle-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.comb{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:var(--border-radius-md);padding:10px;position:relative}
+.comb-top{font-size:10px;font-weight:500;letter-spacing:2px;color:#7bb3d0;margin-bottom:6px;display:flex;justify-content:space-between}
+.hp-bar-outer{height:8px;background:#112244;border-radius:4px;overflow:hidden;border:1px solid #1e3a5f;margin-bottom:8px}
+.hp-bar-inner{height:100%;border-radius:4px;transition:width .5s}
+.hp-p{background:#00c8e0}
+.hp-e{background:#e53935}
+.sprite-row{display:flex;justify-content:center}
+
+.badges{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+.badge{font-size:10px;font-weight:500;letter-spacing:1px;padding:4px 10px;border-radius:12px}
+.badge-blue{color:#00e5ff;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2)}
+.badge-yellow{color:#ffd60a;background:rgba(255,214,10,.08);border:1px solid rgba(255,214,10,.2)}
+
+.dialog-box{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:var(--border-radius-md);padding:12px;margin-bottom:10px}
+.spk{font-size:10px;font-weight:500;color:#e53935;letter-spacing:1px;margin-bottom:5px}
+.dlg{font-size:13px;line-height:1.7}
+.dlg.ok{color:#00ff9d}
+
+.choices{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.cbtn{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:var(--border-radius-md);padding:10px 14px;font-size:12px;font-family:var(--font-sans);color:#e8f4fd;cursor:pointer;text-align:left;line-height:1.6;transition:border-color .15s,background .15s;width:100%}
+.cbtn:hover{border-color:#00e5ff;background:rgba(0,229,255,.05);color:#00e5ff}
+.cbtn.ok{border-color:#00ff9d;background:rgba(0,255,157,.05);color:#00ff9d;pointer-events:none}
+.cbtn.fail{border-color:#e53935;background:rgba(229,57,53,.05);color:#e53935;pointer-events:none}
+.cbtn.dim{opacity:0.3;pointer-events:none}
+.cbtn.nxt{border-color:#ffd60a;color:#ffd60a}
+.cbtn.nxt:hover{background:rgba(255,214,10,.05)}
+
+.math-row{display:grid;grid-template-columns:190px 1fr;gap:10px}
+.plane-box{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:var(--border-radius-md);padding:8px;display:flex;flex-direction:column;align-items:center}
+.plane-lbl{font-size:9px;color:#4a7a9b;letter-spacing:2px;margin-bottom:6px}
+.log-box{background:#000d1a;border:1px solid #1e3a5f;border-radius:var(--border-radius-md);padding:12px;font-family:var(--font-mono);font-size:11px;color:#00e5ff;max-height:200px;overflow-y:auto;line-height:1.8}
+.lh{color:#ffd60a;font-weight:500}
+.ls{color:#4fc3f7}
+.lr{color:#00ff9d}
+.ld{color:#4a7a9b}
+
+.select-screen{padding:4px 0}
+.sel-hdr{text-align:center;padding:0 0 14px}
+.sel-hdr h2{font-size:13px;color:#00e5ff;letter-spacing:3px;font-weight:500}
+.sel-hdr p{font-size:11px;color:#4a7a9b;margin-top:4px}
+.case-list{display:flex;flex-direction:column;gap:8px}
+.case-btn{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:var(--border-radius-md);padding:12px 14px;font-size:12px;font-family:var(--font-sans);color:#e8f4fd;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;width:100%;transition:border-color .15s,background .15s}
+.case-btn:hover{border-color:#00e5ff;background:rgba(0,229,255,.05)}
+.ci{font-size:18px;flex-shrink:0}
+.ct{font-size:12px;font-weight:500;color:#00e5ff}
+.cs{font-size:10px;color:#4a7a9b;margin-top:2px}
+
+.verdict-box{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:var(--border-radius-md);padding:20px;text-align:center}
+.vt{font-size:18px;font-weight:500;margin-bottom:8px}
+.vb{font-size:13px;color:#7bb3d0;line-height:1.7;margin-bottom:14px}
+.score-row{display:flex;gap:12px;justify-content:center;margin-bottom:16px}
+.sc{font-size:11px;font-weight:500;padding:4px 14px;border-radius:12px}
+.sc-p{color:#00ff9d;background:rgba(0,255,157,.12);border:1px solid rgba(0,255,157,.3)}
+.sc-e{color:#e53935;background:rgba(229,57,53,.12);border:1px solid rgba(229,57,53,.3)}
+</style>
+
+<div class="wrap" id="root">
+<div class="hdr">
+  <div class="hdr-t">CYBER COURT</div>
+  <div class="hdr-s">복소수 암호학 증거 분석 법정 시뮬레이션</div>
+</div>
+<div id="main"></div>
+</div>
+
+<script>
+const CASES=[
+  {icon:"🏥",title:"병원 랜섬웨어",sub:"AES-256 갈루아 체 역원 추적",rounds:[
+    {ch:"제1장 일반심리",tech:"갈루아 체 크기 보존 법칙",spk:"변호인",dlg:"난수 발생기 오류로 복호화 키 상태(z)의 절댓값이 완전히 깨졌으므로 키 복구가 수학적으로 불가능합니다!",z1:{a:3,b:4},z2:{a:2,b:1},type:"mul",
+     ch:[{t:"A: |z| = √(3²+4²) = 5로 크기가 보존되므로 유한체 내 역원 추적이 가능합니다!",s:20,ok:true,fb:"정확합니다! 유한체 내에서 크기 성분이 소멸하지 않았음을 수식으로 입증했습니다."},
+         {t:"B: 복호화 키의 크기가 0이 되었으므로 역행렬 계산이 불가능합니다.",s:-10,ok:false,fb:"오답입니다. 수식 전개를 보면 크기는 5로 고정되어 있습니다."}]},
+    {ch:"제2장 반대신문",tech:"허수 단위 i² 실수축 투영",spk:"변호인",dlg:"암호화 키 상태는 피고인의 주관적 기억이므로 불이익 진술거부권에 의해 강제 제출할 수 없습니다!",z1:{a:0,b:1},z2:{a:0,b:1},type:"rot",
+     ch:[{t:"A: i × i = −1. 허수(진술)를 회전하면 객관적 실수축(물적 증거)으로 투영됩니다!",s:20,ok:true,fb:"훌륭한 논리입니다! 암호키의 물적 증거 성질을 완벽하게 입증했습니다."},
+         {t:"B: 암호키는 기억에 의존하므로 진술로 인정해야 합니다.",s:-15,ok:false,fb:"상대방의 페이스에 휘말렸습니다."}]}
+  ]},
+  {icon:"📧",title:"스피어피싱 사기",sub:"RSA-2048 모듈러 위상 상쇄",rounds:[
+    {ch:"제1장 일반심리",tech:"RSA 디지털 서명 검증 원리",spk:"변호인",dlg:"해당 서명은 우연히 발생한 네트워크 노이즈 패킷일 뿐, RSA 모듈러 거듭제곱을 거친 디지털 서명이 아닙니다.",z1:{a:1,b:1},z2:{a:1,b:-1},type:"mul",
+     ch:[{t:"A: 서명(1+i)과 검증키(1-i)를 곱하면 위상이 상쇄되어 정확히 실수 2가 됩니다!",s:20,ok:true,fb:"정답입니다! 허수 성분이 완벽히 제거되어 실수축에 안착하는 과정을 증명했습니다."},
+         {t:"B: 서명 데이터는 복소수와 하등 관련이 없는 독립 정수입니다.",s:-20,ok:false,fb:"틀렸습니다. RSA 공식의 근간은 오일러 복소 회전 주기성에 닿아 있습니다."}]},
+    {ch:"제2장 반대신문",tech:"오일러 공식 z·e^(iθ) 주기성 분석",spk:"변호인",dlg:"피고인은 모듈러 지수 연산을 다룰 줄 모르는 비전문가이므로 직접 변조할 능력이 없습니다.",z1:{a:1,b:0},z2:{a:0,b:1},type:"rot",
+     ch:[{t:"A: e^(iθ) 주기적 회전 궤적(오차 0)을 복제한 해킹 로그가 증거로 존재합니다!",s:20,ok:true,fb:"완벽합니다! 비전문가라는 기만을 기술적 증거로 격파했습니다."},
+         {t:"B: 피고인이 천재 해커일 가능성이 있으므로 전수 조사를 해야 합니다.",s:-10,ok:false,fb:"추측성 발언은 법정 신뢰도를 떨어뜨립니다."}]}
+  ]},
+  {icon:"⚡",title:"발전소 해킹",sub:"양자 Shor 힐베르트 공간 분석",rounds:[
+    {ch:"제1장 일반심리",tech:"확률 진폭 |z|² 물리적 확정",spk:"변호인",dlg:"양자 상태는 힐베르트 복소공간 내에 중첩되어 있으므로 특정 범죄 행위가 확정되었다고 볼 수 없습니다!",z1:{a:2,b:2},z2:{a:0.5,b:0.5},type:"mul",
+     ch:[{t:"A: 시스템 관측 즉시, 복소수 확률 진폭 |z|²이 100% 실재적 로그 기록으로 붕괴·고정되었습니다!",s:20,ok:true,fb:"완벽한 답변입니다. 양자 상태의 관측 붕괴를 법적 확정 증거로 연결했습니다."},
+         {t:"B: 중첩 상태는 재판장님이 판단할 수 없으므로 심리에서 제외해야 합니다.",s:-15,ok:false,fb:"논리 전개를 포기하면 패소합니다."}]},
+    {ch:"제2장 반대신문",tech:"양자 푸리에 변환(QFT) 복소 위상 회전",spk:"변호인",dlg:"피고인의 조잡한 양자 알고리즘은 최신 양자 내성 암호(PQC)의 격자 구조를 깨뜨릴 수 없습니다.",z1:{a:0,b:2},z2:{a:-1,b:0},type:"rot",
+     ch:[{t:"A: Shor 알고리즘의 양자 푸리에 변환으로 격자의 주기성을 복소 위상 회전으로 바꾸어 우회했습니다!",s:20,ok:true,fb:"대단합니다! 변호인의 기만 전술을 수학적 팩트로 완파했습니다."},
+         {t:"B: PQC 성능이 낮아서 뚫린 것이므로 암호 제조사의 책임입니다.",s:-10,ok:false,fb:"사건의 본질을 흐리는 잘못된 변론입니다."}]}
+  ]},
+  {icon:"🎵",title:"다크웹 마약 거래",sub:"DFT 푸리에 변환 성문 분석",rounds:[
+    {ch:"제1장 일반심리",tech:"DFT 주파수 도메인 성문 위상 추출",spk:"변호인",dlg:"압수된 오디오는 단순 화이트 노이즈일 뿐, 피고인의 목소리 파형이라는 정량적 증거가 없습니다.",z1:{a:4,b:-3},z2:{a:1,b:0},type:"mul",
+     ch:[{t:"A: DFT 공식 Σf[n]·e^(-i2πkn/N) 전개 결과, 특정 복소 위상각에서 피고인 성문이 검출되었습니다!",s:20,ok:true,fb:"훌륭합니다! 주파수 스펙트럼 속 숨겨진 복소 신호를 과학적으로 증명했습니다."},
+         {t:"B: 볼륨을 최대로 높여보니 피고인의 억양과 매우 흡사합니다.",s:-20,ok:false,fb:"주관적 감각은 법정에서 증거 능력을 상실합니다."}]},
+    {ch:"제2장 반대신문",tech:"고주파 영역 arg(z) 스테가노그래피 추출",spk:"변호인",dlg:"압수된 마약 거래 이미지의 모든 픽셀 데이터는 자연물 사진일 뿐 임의 조작 흔적은 없습니다.",z1:{a:1,b:1},z2:{a:0,b:1},type:"rot",
+     ch:[{t:"A: 고주파 성분의 복소수 위상각 arg(z)를 역산한 결과, 가상자산 지갑 주소 행렬이 도출되었습니다!",s:20,ok:true,fb:"피고인의 은닉 범죄 기법을 완벽하게 까발렸습니다."},
+         {t:"B: 이미지의 특정 픽셀 색상 배열이 범죄 가담자 이름과 비슷합니다.",s:-10,ok:false,fb:"억측에 기반한 반론입니다."}]}
+  ]},
+  {icon:"🎭",title:"딥페이크 사기",sub:"GAN 탐지 잔차 복소 행렬 분석",rounds:[
+    {ch:"제1장 일반심리",tech:"합성본 프레임 탐지 잔차 계산",spk:"변호인",dlg:"이 투자 유치 영상은 실제 촬영된 카메라 원본입니다. 인공지능이 합성했다는 정량적 수치가 있습니까?",z1:{a:5,b:2},z2:{a:5,b:-2},type:"mul",
+     ch:[{t:"A: 고주파 성분 매핑 결과, 복소평면상 탐지 잔차 오차가 자연적 임계치를 초과합니다!",s:20,ok:true,fb:"정확합니다! GAN 모델 특유의 미세 수학적 불연속성을 명확히 짚어냈습니다."},
+         {t:"B: 딥페이크 영상은 픽셀이 깨져 보이므로 가짜임이 눈으로 보입니다.",s:-15,ok:false,fb:"최신 초고해상도 GAN은 육안 식별이 불가능합니다."}]},
+    {ch:"제2장 반대신문",tech:"GPU 가중치 행렬 위상 회전각 매칭",spk:"변호인",dlg:"수학적 계산 모델 오차일 뿐, 이것이 피고인의 시스템에서 연산되었다는 증거는 되지 못합니다.",z1:{a:0,b:3},z2:{a:0,b:-1},type:"rot",
+     ch:[{t:"A: GPU 가중치 행렬 내 복소 회전각 구조가 합성본 탐지 잔차 행렬과 소수점 6자리까지 일치합니다!",s:20,ok:true,fb:"스모킹 건! 피고인의 범행 컴퓨터와 범죄 결과물을 완벽히 묶어냈습니다."},
+         {t:"B: 피고인의 하드디스크에 딥페이크라는 이름의 폴더가 존재합니다.",s:-10,ok:false,fb:"폴더명 자체는 직접적 증거가 되기 어렵습니다."}]}
+  ]}
+];
+
+let S={mode:'select',ci:0,ri:0,php:100,ehp:100,ang:0,aid:null,answered:false};
+const main=document.getElementById('main');
+let planeCV=null,planeCtx=null;
+
+function render(){
+  if(S.mode==='select'){showSelect();return;}
+  if(S.mode==='verdict'){showVerdict();return;}
+  showBattle();
+}
+
+function showSelect(){
+  if(S.aid){cancelAnimationFrame(S.aid);S.aid=null;}
+  main.innerHTML=`<div class="select-screen">
+    <div class="sel-hdr"><h2>CASE SELECTION</h2><p>심문할 사이버 범죄 사건을 선택하세요</p></div>
+    <div class="case-list">${CASES.map((c,i)=>`
+      <button class="case-btn" onclick="startCase(${i})">
+        <span class="ci">${c.icon}</span>
+        <div><div class="ct">${c.title}</div><div class="cs">${c.sub}</div></div>
+      </button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function startCase(i){
+  S={mode:'battle',ci:i,ri:0,php:100,ehp:100,ang:0,aid:null,answered:false};
+  render();startAnim();
+}
+
+function showBattle(){
+  const c=CASES[S.ci],r=c.rounds[S.ri];
+  main.innerHTML=`
+  <div class="battle-row">
+    <div class="comb">
+      <div class="comb-top"><span>PROSECUTOR</span><span id="php-n">${S.php}</span></div>
+      <div class="hp-bar-outer"><div class="hp-bar-inner hp-p" id="php-b" style="width:${S.php}%"></div></div>
+      <div class="sprite-row"><canvas id="sp1" width="80" height="96" style="image-rendering:pixelated"></canvas></div>
+    </div>
+    <div class="comb">
+      <div class="comb-top"><span>DEFENSE</span><span id="ehp-n">${S.ehp}</span></div>
+      <div class="hp-bar-outer"><div class="hp-bar-inner hp-e" id="ehp-b" style="width:${S.ehp}%"></div></div>
+      <div class="sprite-row"><canvas id="sp2" width="80" height="96" style="image-rendering:pixelated"></canvas></div>
+    </div>
+  </div>
+  <div class="badges">
+    <span class="badge badge-blue">${r.ch}</span>
+    <span class="badge badge-yellow">${r.tech}</span>
+  </div>
+  <div class="dialog-box">
+    <div class="spk" id="spk-lbl">${r.spk} :</div>
+    <div class="dlg" id="dlg-txt">"${r.dlg}"</div>
+  </div>
+  <div class="choices" id="choices-area">
+    ${r.ch.map((x,i)=>`<button class="cbtn" id="cb${i}" onclick="choose(${i})">${x.t}</button>`).join('')}
+  </div>
+  <div class="math-row">
+    <div class="plane-box">
+      <div class="plane-lbl">COMPLEX PLANE</div>
+      <canvas id="cp" width="170" height="170" style="image-rendering:pixelated"></canvas>
+    </div>
+    <div class="log-box" id="mlog"><span class="lh">[분석 대기 중]</span></div>
+  </div>`;
+  drawSprite('sp1','p');drawSprite('sp2','e');
+  planeCV=document.getElementById('cp');
+  planeCtx=planeCV?planeCV.getContext('2d'):null;
+  drawPlane();updateLog();
+}
+
+function choose(idx){
+  if(S.answered)return;
+  S.answered=true;
+  const r=CASES[S.ci].rounds[S.ri];
+  const x=r.ch[idx];
+  document.getElementById('cb'+idx).className='cbtn '+(x.ok?'ok':'fail');
+  r.ch.forEach((_,i)=>{if(i!==idx){const b=document.getElementById('cb'+i);if(b)b.className='cbtn dim';}});
+  if(x.s>0)S.ehp=Math.max(0,S.ehp-x.s);
+  else S.php=Math.max(0,S.php+x.s);
+  const pb=document.getElementById('php-b'),pn=document.getElementById('php-n');
+  const eb=document.getElementById('ehp-b'),en=document.getElementById('ehp-n');
+  if(pb){pb.style.width=S.php+'%';pn.textContent=S.php;}
+  if(eb){eb.style.width=S.ehp+'%';en.textContent=S.ehp;}
+  const dl=document.getElementById('dlg-txt'),sl=document.getElementById('spk-lbl');
+  if(dl){dl.className='dlg ok';dl.textContent=x.fb;}
+  if(sl)sl.textContent='재판장 :';
+  setTimeout(()=>{
+    const ca=document.getElementById('choices-area');
+    if(ca)ca.innerHTML=`<button class="cbtn nxt" onclick="nextStep()">다음 변론 단계로 ▶</button>`;
+  },500);
+}
+
+function nextStep(){
+  if(S.php<=0){S.mode='verdict';S.result='lose';if(S.aid){cancelAnimationFrame(S.aid);S.aid=null;}render();return;}
+  const c=CASES[S.ci];
+  S.ri++;
+  if(S.ri<c.rounds.length){S.answered=false;showBattle();}
+  else{
+    S.mode='verdict';S.result=S.ehp<=50?'win':'draw';
+    if(S.aid){cancelAnimationFrame(S.aid);S.aid=null;}render();
+  }
+}
+
+function showVerdict(){
+  const w=S.result==='win',l=S.result==='lose';
+  const c=CASES[S.ci];
+  main.innerHTML=`<div class="verdict-box">
+    <div class="vt" style="color:${w?'#00ff9d':l?'#e53935':'#ffd60a'}">${w?'유죄 선고 — 승소':l?'패소':'증거력 미달 — 무죄'}</div>
+    <div class="vb">${w?`복소 가중치 및 오일러 공식 기반 회전 변조 오차 분석 결과,<br>${c.title} 피고인의 혐의가 수학적으로 명백히 증명되었습니다.`
+      :l?`피고인의 수식 왜곡 전술에 밀려 패소했습니다.<br>검사 신뢰도가 0으로 하락했습니다.`
+      :`피고인의 수식 모순을 결정적으로 폭로하지 못했습니다.<br>더 날카로운 수학적 증거가 필요합니다.`}</div>
+    <div class="score-row">
+      <span class="sc sc-p">검사 HP : ${S.php}</span>
+      <span class="sc sc-e">변호인 HP : ${S.ehp}</span>
+    </div>
+    <button class="cbtn nxt" onclick="backSel()">↩ 다른 사건 선택</button>
+  </div>`;
+}
+
+function backSel(){S.mode='select';render();}
+
+function drawSprite(id,type){
+  const cv=document.getElementById(id);if(!cv)return;
+  const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);
+  const px=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(x,y,w,h);};
+  if(type==='p'){
+    px(25,8,30,28,'#1a2a4a');px(28,10,24,22,'#2c5f8a');
+    px(20,36,40,50,'#1565c0');px(10,40,12,36,'#0d47a1');px(58,40,12,36,'#0d47a1');
+    px(22,86,16,10,'#0a2a6e');px(42,86,16,10,'#0a2a6e');
+    px(30,12,8,6,'#5c9dcf');px(42,12,8,6,'#5c9dcf');
+    px(32,22,16,6,'#e8f4fd');
+    ctx.fillStyle='#00e5ff';ctx.font='bold 9px monospace';ctx.fillText('검사',30,33);
+  } else {
+    px(25,8,30,28,'#2a1a1a');px(28,10,24,22,'#8a2c2c');
+    px(20,36,40,50,'#c62828');px(10,40,12,36,'#b71c1c');px(58,40,12,36,'#b71c1c');
+    px(22,86,16,10,'#6e0a0a');px(42,86,16,10,'#6e0a0a');
+    px(30,12,8,6,'#cf7a7a');px(42,12,8,6,'#cf7a7a');
+    px(32,22,16,6,'#1a1a1a');
+    ctx.fillStyle='#ff5252';ctx.font='bold 8px monospace';ctx.fillText('변호인',24,33);
+  }
+}
+
+function drawPlane(){
+  if(!planeCtx||!planeCV)return;
+  const ctx=planeCtx,w=planeCV.width,h=planeCV.height,cx=w/2,cy=h/2,sc=18;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#050d1a';ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle='#0d2035';ctx.lineWidth=1;
+  for(let i=0;i<w;i+=sc){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);ctx.stroke();}
+  for(let i=0;i<h;i+=sc){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(w,i);ctx.stroke();}
+  ctx.strokeStyle='#1e3a5f';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(w,cy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,0);ctx.lineTo(cx,h);ctx.stroke();
+  const r=CASES[S.ci].rounds[S.ri];if(!r)return;
+  const z1=r.z1,z2=r.z2,tp=r.type;
+  const vec=(x,y,col,lbl)=>{
+    const ex=cx+x*sc,ey=cy-y*sc;
+    ctx.strokeStyle=col;ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(ex,ey);ctx.stroke();
+    ctx.fillStyle=col;ctx.beginPath();ctx.arc(ex,ey,3,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle=col;ctx.font='10px monospace';ctx.fillText(lbl,ex+4,ey-3);
+  };
+  vec(z1.a,z1.b,'#00e5ff','z\u2081');
+  if(tp==='mul'){
+    vec(z2.a,z2.b,'#ffd60a','z\u2082');
+    vec(z1.a*z2.a-z1.b*z2.b,z1.a*z2.b+z1.b*z2.a,'#00ff9d','z\u2081z\u2082');
+  } else {
+    const rx=z1.a*Math.cos(S.ang)-z1.b*Math.sin(S.ang);
+    const ry=z1.a*Math.sin(S.ang)+z1.b*Math.cos(S.ang);
+    vec(rx,ry,'#ff9800','z\u00b7e\u2071\u1d9d');
+  }
+}
+
+function updateLog(){
+  const el=document.getElementById('mlog');if(!el)return;
+  const r=CASES[S.ci].rounds[S.ri];if(!r)return;
+  const z1=r.z1,z2=r.z2;
+  const ms=z1.a*z1.a+z1.b*z1.b;
+  const mod=Math.sqrt(ms).toFixed(3);
+  const deg=(Math.atan2(z1.b,z1.a)*180/Math.PI).toFixed(1);
+  let h=`<span class="lh">[ 복소수 연산 증거 분석 ]</span><br>`;
+  h+=`<span class="ld">━━━━━━━━━━━━━━━━━━━━</span><br>`;
+  h+=`<span class="ld">입력 :</span> z\u2081 = ${z1.a} + ${z1.b}i<br>`;
+  h+=`<span class="ls">\u2460 |z\u2081| = \u221a(${z1.a}\u00b2+${z1.b}\u00b2)</span><br>`;
+  h+=`&nbsp;&nbsp;= \u221a${ms} = <span class="lr">${mod}</span><br>`;
+  h+=`<span class="ls">\u2461 arg(z\u2081) = atan2(${z1.b},${z1.a})</span><br>`;
+  h+=`&nbsp;&nbsp;= <span class="lr">${deg}\u00b0</span><br>`;
+  h+=`<span class="ld">━━━━━━━━━━━━━━━━━━━━</span><br>`;
+  if(r.type==='mul'){
+    const ra=z1.a*z2.a-z1.b*z2.b,rb=z1.a*z2.b+z1.b*z2.a;
+    h+=`<span class="ls">\u2462 z\u2081\u00d7z\u2082 분배 전개 :</span><br>`;
+    h+=`&nbsp;&nbsp;(${z1.a}+${z1.b}i)(${z2.a}+${z2.b}i)<br>`;
+    h+=`&nbsp;&nbsp;i\u00b2=-1 \uc801\uc6a9 \u21d2<br>`;
+    h+=`&nbsp;&nbsp;\u25b6 <span class="lr">${ra}+${rb}i</span>`;
+  } else {
+    const deg2=(S.ang*180/Math.PI).toFixed(1);
+    const rx=(z1.a*Math.cos(S.ang)-z1.b*Math.sin(S.ang)).toFixed(3);
+    const ry=(z1.a*Math.sin(S.ang)+z1.b*Math.cos(S.ang)).toFixed(3);
+    h+=`<span class="ls">\u2462 \uc624\uc77c\ub7ec \ud68c\uc804 z\u00b7e\u2071\u1d9d :</span><br>`;
+    h+=`&nbsp;&nbsp;\u03b8 = <span style="color:#ffd60a">${deg2}\u00b0</span> (\uc2e4\uc2dc\uac04)<br>`;
+    h+=`&nbsp;&nbsp;cos\u03b8=${Math.cos(S.ang).toFixed(3)}<br>`;
+    h+=`&nbsp;&nbsp;\u25b6 <span class="lr">${rx}+${ry}i</span>`;
+  }
+  el.innerHTML=h;
+}
+
+function startAnim(){
+  if(S.aid){cancelAnimationFrame(S.aid);S.aid=null;}
+  function loop(){
+    if(S.mode!=='battle'){S.aid=null;return;}
+    S.ang+=0.025;drawPlane();updateLog();
+    S.aid=requestAnimationFrame(loop);
+  }
+  S.aid=requestAnimationFrame(loop);
+}
+
+render();
+</script>
